@@ -1,0 +1,86 @@
+defaults:
+
+  # Train Script
+  logdir: /dev/null
+  load_logdir: /dev/null
+  seed: 0
+  task: dmc_walker_walk
+  render_size: [64, 64]
+  dmc_camera: -1
+  camera: none
+  atari_grayscale: True
+  time_limit: 0
+  action_repeat: 1
+  steps: 1e8
+  log_every: 1e4
+  eval_every: 5000
+  pretrain: 1
+  train_every: 5
+  train_steps: 1
+  replay: {capacity: 2e6, ongoing: False, minlen: 50, maxlen: 50, prioritize_ends: True}
+  dataset: {batch: 16, length: 50}
+  log_keys_video: ['image']
+  log_keys_sum: '^$'
+  log_keys_mean: '^$'
+  log_keys_max: '^$'
+  precision: 16
+  jit: True
+
+  # Agent
+  clip_rewards: tanh
+
+  # World Model
+  grad_heads: [decoder]
+  rssm: {ensemble: 1, hidden: 1024, deter: 1024, stoch: 32, discrete: 32, act: elu, norm: none, std_act: sigmoid2, min_std: 0.1, rnn_layers: 1}
+  encoder: {mlp_keys: '.*', cnn_keys: '.*', act: elu, norm: none, cnn_depth: 48, cnn_kernels: [4, 4, 4, 4], mlp_layers: [400, 400, 400, 400]}
+  decoder: {mlp_keys: '.*', cnn_keys: '.*', act: elu, norm: none, cnn_depth: 48, cnn_kernels: [5, 5, 6, 6], mlp_layers: [400, 400, 400, 400], dist_type: l2}
+  loss_scales: {kl: 1.0}
+  kl: {free: 0.0, forward: False, balance: 0.8, free_avg: True}
+  model_opt: {opt: adam, lr: 1e-4, eps: 1e-5, clip: 100, wd: 1e-6}
+
+
+atari_pretrain:
+
+  task: atari_pong
+  encoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  decoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  time_limit: 27000
+  action_repeat: 4
+  steps: 5e7
+  log_every: 500
+  train_every: 5
+  clip_rewards: tanh
+  rssm: {hidden: 600, deter: 600}
+  grad_heads: [decoder]
+  model_opt.lr: 2e-4
+  loss_scales.kl: 0.1
+
+metaworld_pretrain:
+
+  task: metaworld_door_open
+  encoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  decoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  replay: {minlen: 25, maxlen: 25}
+  dataset: {batch: 16, length: 25}
+  action_repeat: 1
+  steps: 5e7
+  log_every: 100
+  train_every: 1
+  rssm: {hidden: 1024, deter: 1024}
+  grad_heads: [decoder]
+  model_opt.lr: 3e-4
+  loss_scales.kl: 0.1
+
+dmc_vision_pretrain:
+  task: dmc_walker_walk
+  encoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  decoder: {mlp_keys: '$^', cnn_keys: 'image'}
+  action_repeat: 2
+  log_every: 500
+  pretrain: 100
+  clip_rewards: identity
+  replay.prioritize_ends: False
+  grad_heads: [decoder]
+  rssm: {hidden: 200, deter: 200}
+  model_opt.lr: 3e-4
+  kl.free: 1.0
