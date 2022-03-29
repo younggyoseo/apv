@@ -1,6 +1,6 @@
 # Reinforcement Learning with Action-Free Pre-Training from Videos
 
-Implementation of the APV in TensorFlow 2. Our code is based on the implementation of [DreamerV2](https://github.com/danijar/dreamerv2). We also provide the raw data we used for reporting our main experimental results in `data` directory.
+Implementation of the [APV](https://arxiv.org/abs/2203.13880) in TensorFlow 2. Our code is based on the implementation of [DreamerV2](https://github.com/danijar/dreamerv2). We also provide the raw data we used for reporting our main experimental results in `data` directory.
 
 If you find this code useful, please reference in our paper:
 
