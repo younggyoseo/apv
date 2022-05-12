@@ -280,7 +280,6 @@ class Decoder(common.Module):
         cnn_depth=48,
         cnn_kernels=(4, 4, 4, 4),
         mlp_layers=[400, 400, 400, 400],
-        dist_type="l2",
     ):
         self._shapes = shapes
         self.cnn_keys = [
@@ -296,7 +295,6 @@ class Decoder(common.Module):
         self._cnn_depth = cnn_depth
         self._cnn_kernels = cnn_kernels
         self._mlp_layers = mlp_layers
-        self._dist_type = dist_type
 
     def __call__(self, features):
         features = tf.cast(features, prec.global_policy().compute_dtype)
@@ -323,7 +321,7 @@ class Decoder(common.Module):
         x = x.reshape(features.shape[:-1] + x.shape[1:])
         means = tf.split(x, list(channels.values()), -1)
         dists = {
-            key: tfd.Independent(get_decoder_dist(self._dist_type)(mean, 1), 3)
+            key: tfd.Independent(tfd.Normal(mean, 1), 3)
             for (key, shape), mean in zip(channels.items(), means)
         }
         return dists
