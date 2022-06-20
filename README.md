@@ -25,7 +25,7 @@ Please also cite DreamerV2 paper on top of which APV is built:
 ```
 
 ## Method
-APV is a pre-training and fine-tuning framework for model-based RL algorithms: we first pre-train an action-free latente video prediction model, and then utilize the pre-trained representations for efficiently learning action-conditional world models on unseen environments.
+APV is a pre-training and fine-tuning framework for model-based RL algorithms: we first pre-train an action-free latent video prediction model, and then utilize the pre-trained representations for efficiently learning action-conditional world models on unseen environments.
 
 ![overview_figure](figures/overview.png)
 
